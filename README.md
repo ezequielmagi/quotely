@@ -17,7 +17,7 @@ _A definir. Ver [decisiones](docs/decisions/)._
 Cada decisión importante está documentada como ADR en [`docs/decisions/`](docs/decisions/).
 
 ## 📓 Devlog
-Lo que voy construyendo, rompiendo y aprendiendo: [`docs/devlog.md`](docs/devlog.md)
+Registro de avances y decisiones del día a día: [`docs/devlog.md`](docs/devlog.md)
 
 ## 🚀 Cómo correrlo localmente
 _Próximamente._
