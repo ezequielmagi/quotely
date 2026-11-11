@@ -1,6 +1,6 @@
 # Quotely
 
-> Proyecto 01 de la serie **Portfoliando FS**: aprender desarrollo fullstack construyendo soluciones reales para pymes, documentando el porqué de cada decisión.
+> Plataforma de cotizaciones B2B: catálogo de productos, pedidos de cotización multi-producto y panel de gestión. Cada decisión técnica está documentada en [ADRs](docs/decisions/).
 
 ## 🎯 El problema
 Muchas empresas B2B no venden con carrito: el cliente arma un pedido de varios productos y pide cotización. Esta app resuelve ese flujo de punta a punta.
