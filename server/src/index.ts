@@ -3,6 +3,7 @@ import express from 'express';
 import { sql } from 'drizzle-orm';
 import { db } from './db/index.js';
 import { categoriesRouter } from './modules/categories/categories.routes.js';
+import { productsRouter } from './modules/products/products.routes.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -13,6 +14,7 @@ app.get('/health', async (_req, res) => {
 });
 
 app.use('/api/categories', categoriesRouter);
+app.use('/api/products', productsRouter);
 
 app.listen(PORT, () => {
   console.log(`API escuchando en http://localhost:${PORT}`);
