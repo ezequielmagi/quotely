@@ -1,5 +1,20 @@
 # Devlog
 
+## 2026-11-12
+
+### Hecho
+- Servidor Express 5 + TypeScript con endpoint `/health` que verifica la conexión a la base.
+- PostgreSQL 17 con Docker Compose ([ADR 0006](decisions/0006-entorno-local.md)).
+- Conexión con Drizzle ORM y variables de entorno por aplicación.
+- Esquema completo (6 tablas) y migración inicial → [modelo de datos](modelo-de-datos.md).
+
+### Problemas y soluciones
+- **Docker no arrancaba en Windows**: faltaba WSL → `wsl --install --no-distribution`.
+- **Error de autenticación (`28P01`) al conectar**: un PostgreSQL instalado en Windows ocupaba el puerto 5432 y recibía las conexiones → contenedor mapeado al puerto 5433 y servicio local desactivado.
+
+### Próximo
+- Endpoints del catálogo: categorías y productos.
+
 ## 2026-11-11
 
 ### Hecho
