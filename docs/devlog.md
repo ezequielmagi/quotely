@@ -1,5 +1,20 @@
 # Devlog
 
+## 2026-11-17
+
+### Hecho
+- Endpoints del catálogo: `GET /api/categories`, `GET /api/products` (filtros por categoría y búsqueda) y `GET /api/products/:id`.
+- Seed con datos de prueba.
+- `POST /api/quotes`: validación con Zod ([ADR 0007](decisions/0007-validacion.md)), transacción (contacto + cotización + ítems) y reutilización de contactos por email.
+- Manejador central de errores: los errores inesperados ya no exponen detalles técnicos.
+- Pruebas de la API con REST Client (`server/requests/quotes.http`).
+
+### Problemas y soluciones
+- **`ECONNREFUSED` al conectar**: Docker Desktop no estaba abierto, así que la base no corría → abrir Docker y `docker compose up -d`.
+
+### Próximo
+- Panel admin: login y endpoints protegidos para gestionar cotizaciones.
+
 ## 2026-11-12
 
 ### Hecho
