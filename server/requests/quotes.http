@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:3000
+
+### Cotización válida → 201
+POST {{baseUrl}}/api/quotes
+Content-Type: application/json
+
+{
+  "contact": {
+    "name": "Ana Pérez",
+    "email": "Ana@Empresa.com",
+    "company": "Empresa SA"
+  },
+  "comment": "Necesitamos logo bordado",
+  "privacyAccepted": true,
+  "items": [
+    { "productId": 1, "quantity": 100 },
+    { "productId": 2, "quantity": 50 }
+  ]
+}
+
+### Mismo email, sin empresa → reutiliza el contacto y conserva la empresa
+POST {{baseUrl}}/api/quotes
+Content-Type: application/json
+
+{
+  "contact": { "name": "Ana Pérez", "email": "ana@empresa.com" },
+  "privacyAccepted": true,
+  "items": [{ "productId": 1, "quantity": 20 }]
+}
+
+### Datos inválidos → 400 con detalle por campo
+POST {{baseUrl}}/api/quotes
+Content-Type: application/json
+
+{
+  "contact": { "name": "", "email": "no-es-un-email" },
+  "privacyAccepted": false,
+  "items": []
+}
+
+### Producto inexistente → 422
+POST {{baseUrl}}/api/quotes
+Content-Type: application/json
+
+{
+  "contact": { "name": "Juan", "email": "juan@test.com" },
+  "privacyAccepted": true,
+  "items": [{ "productId": 9999, "quantity": 1 }]
+}
