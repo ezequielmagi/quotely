@@ -90,3 +90,12 @@ export const admins = pgTable('admins', {
   passwordHash: text('password_hash').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const sessions = pgTable('sessions', {
+  id: varchar('id', { length: 64 }).primaryKey(),
+  adminId: integer('admin_id')
+    .notNull()
+    .references(() => admins.id, { onDelete: 'cascade' }),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
