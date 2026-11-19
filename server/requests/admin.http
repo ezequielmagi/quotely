@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:3000
+
+### 1. Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@quotely.com",
+  "password": "MiClaveSegura123"
+}
+
+### 2. Listar cotizaciones → 200 si hay sesión
+GET {{baseUrl}}/api/admin/quotes

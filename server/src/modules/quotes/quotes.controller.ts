@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { createQuoteSchema } from './quotes.schema.js';
-import { createQuote } from './quotes.service.js';
+import { createQuote, getQuotes } from './quotes.service.js';
 
 export async function submitQuote(req: Request, res: Response) {
   const result = createQuoteSchema.safeParse(req.body);
@@ -17,4 +17,9 @@ export async function submitQuote(req: Request, res: Response) {
   const quote = await createQuote(result.data);
 
   res.status(201).json({ data: quote });
+}
+
+export async function listQuotes(_req: Request, res: Response) {
+  const data = await getQuotes();
+  res.json({ data });
 }

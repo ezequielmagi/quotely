@@ -6,7 +6,8 @@ import { AppError } from './lib/errors.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { categoriesRouter } from './modules/categories/categories.routes.js';
 import { productsRouter } from './modules/products/products.routes.js';
-import { quotesRouter } from './modules/quotes/quotes.routes.js';
+import { adminQuotesRouter , quotesRouter } from './modules/quotes/quotes.routes.js';
+import { requireAuth } from './middlewares/require-auth.js';
 
 import cookieParser from 'cookie-parser';
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/quotes', quotesRouter);
+app.use('/api/admin/quotes', requireAuth, adminQuotesRouter);
 
 // Manejador central de errores: siempre al final
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {

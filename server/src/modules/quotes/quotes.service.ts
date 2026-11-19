@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { db } from '../../db/index.js';
 import { contacts, products, quoteItems, quotes } from '../../db/schema.js';
 import { AppError } from '../../lib/errors.js';
@@ -60,4 +60,22 @@ export async function createQuote(input: CreateQuoteInput) {
 
     return quote;
   });
+}
+
+
+export async function getQuotes() {
+  return db
+    .select({
+      id: quotes.id,
+      status: quotes.status,
+      createdAt: quotes.createdAt,
+      contact: {
+        name: contacts.name,
+        email: contacts.email,
+        company: contacts.company,
+      },
+    })
+    .from(quotes)
+    .innerJoin(contacts, eq(quotes.contactId, contacts.id))
+    .orderBy(desc(quotes.createdAt));
 }
