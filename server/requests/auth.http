@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:3000
+
+### Login correcto → 200 + cookie
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@quotely.com",
+  "password": "MiClaveSegura123"
+}
+
+### Contraseña incorrecta → 401
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@quotely.com",
+  "password": "esta-no-es"
+}

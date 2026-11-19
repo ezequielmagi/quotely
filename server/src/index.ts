@@ -3,6 +3,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import { sql } from 'drizzle-orm';
 import { db } from './db/index.js';
 import { AppError } from './lib/errors.js';
+import { authRouter } from './modules/auth/auth.routes.js';
 import { categoriesRouter } from './modules/categories/categories.routes.js';
 import { productsRouter } from './modules/products/products.routes.js';
 import { quotesRouter } from './modules/quotes/quotes.routes.js';
@@ -17,6 +18,7 @@ app.get('/health', async (_req, res) => {
   res.json({ status: 'ok', database: 'ok' });
 });
 
+app.use('/api/auth', authRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/quotes', quotesRouter);
