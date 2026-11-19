@@ -8,10 +8,14 @@ import { categoriesRouter } from './modules/categories/categories.routes.js';
 import { productsRouter } from './modules/products/products.routes.js';
 import { quotesRouter } from './modules/quotes/quotes.routes.js';
 
+import cookieParser from 'cookie-parser';
+
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.get('/health', async (_req, res) => {
   await db.execute(sql`SELECT 1`);

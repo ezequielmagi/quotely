@@ -17,3 +17,7 @@ Content-Type: application/json
   "email": "admin@quotely.com",
   "password": "esta-no-es"
 }
+
+
+### ¿Quién soy? → 200 si hay sesión
+GET {{baseUrl}}/api/auth/me

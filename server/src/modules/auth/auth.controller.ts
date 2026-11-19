@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { loginSchema } from './auth.schema.js';
-import { login } from './auth.service.js';
+import { getAdminById, login } from './auth.service.js';
 
 export const SESSION_COOKIE = 'quotely_session';
 
@@ -27,4 +27,9 @@ export async function loginAdmin(req: Request, res: Response) {
   });
 
   res.json({ data: { email: result.data.email } });
+}
+
+export async function getMe(_req: Request, res: Response) {
+  const admin = await getAdminById(res.locals.adminId);
+  res.json({ data: admin });
 }

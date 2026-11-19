@@ -31,3 +31,12 @@ export async function login(email: string, password: string) {
 
   return { token, expiresAt };
 }
+
+export async function getAdminById(id: number) {
+  const [admin] = await db
+    .select({ id: admins.id, email: admins.email })
+    .from(admins)
+    .where(eq(admins.id, id));
+
+  return admin ?? null;
+}
