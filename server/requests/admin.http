@@ -11,3 +11,9 @@ Content-Type: application/json
 
 ### 2. Listar cotizaciones → 200 si hay sesión
 GET {{baseUrl}}/api/admin/quotes
+
+### 3. Detalle de una cotización → 200
+GET {{baseUrl}}/api/admin/quotes/1
+
+### 4. Cotización inexistente → 404
+GET {{baseUrl}}/api/admin/quotes/99999

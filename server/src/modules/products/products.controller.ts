@@ -1,11 +1,7 @@
 import type { Request, Response } from 'express';
 import { getProductById, getProducts } from './products.service.js';
+import { parseId } from '../../lib/parse-id.js';
 
-// Convierte un valor en un ID válido (entero positivo) o devuelve null
-function parseId(value: unknown): number | null {
-  const id = Number(value);
-  return Number.isInteger(id) && id > 0 ? id : null;
-}
 
 export async function listProducts(req: Request, res: Response) {
   const { category, search } = req.query;

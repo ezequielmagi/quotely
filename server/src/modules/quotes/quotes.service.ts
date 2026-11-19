@@ -79,3 +79,39 @@ export async function getQuotes() {
     .innerJoin(contacts, eq(quotes.contactId, contacts.id))
     .orderBy(desc(quotes.createdAt));
 }
+
+export async function getQuoteById(id: number) {
+  // Consulta 1: la cotización con su contacto
+  const [quote] = await db
+    .select({
+      id: quotes.id,
+      status: quotes.status,
+      comment: quotes.comment,
+      createdAt: quotes.createdAt,
+      updatedAt: quotes.updatedAt,
+      contact: {
+        name: contacts.name,
+        email: contacts.email,
+        company: contacts.company,
+        phone: contacts.phone,
+      },
+    })
+    .from(quotes)
+    .innerJoin(contacts, eq(quotes.contactId, contacts.id))
+    .where(eq(quotes.id, id));
+
+  if (!quote) return null;
+
+  // Consulta 2: los productos de esa cotización
+  const items = await db
+    .select({
+      id: quoteItems.id,
+      productId: quoteItems.productId,
+      productName: quoteItems.productName,
+      quantity: quoteItems.quantity,
+    })
+    .from(quoteItems)
+    .where(eq(quoteItems.quoteId, id));
+
+  return { ...quote, items };
+}
