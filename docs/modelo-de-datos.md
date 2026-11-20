@@ -8,6 +8,7 @@ erDiagram
     CONTACTS ||--o{ QUOTES : solicita
     QUOTES ||--|{ QUOTE_ITEMS : incluye
     PRODUCTS |o--o{ QUOTE_ITEMS : "referenciado en"
+    ADMINS ||--o{ SESSIONS : tiene
 
     CATEGORIES {
         int id PK
@@ -47,6 +48,11 @@ erDiagram
         varchar email UK
         text password_hash
     }
+    SESSIONS {
+        varchar id PK
+        int admin_id FK
+        timestamp expires_at
+    }
 ```
 
 Todas las tablas incluyen `created_at`; `products`, `contacts` y `quotes` incluyen además `updated_at`.
@@ -59,6 +65,7 @@ Todas las tablas incluyen `created_at`; `products`, `contacts` y `quotes` incluy
 | Cotización → Contacto | `RESTRICT` | Se preserva el historial de cotizaciones de cada contacto |
 | Ítem → Cotización | `CASCADE` | Los ítems no existen sin su cotización |
 | Ítem → Producto | `SET NULL` | El ítem conserva `product_name` aunque el producto se borre |
+| Sesión → Admin | `CASCADE` | Si se borra un admin, sus sesiones dejan de existir |
 
 ## Decisiones de diseño
 - **Estados de cotización como `enum`**: la base rechaza cualquier valor fuera de `nueva`, `en_proceso`, `respondida`, `cerrada`.
@@ -68,5 +75,6 @@ Todas las tablas incluyen `created_at`; `products`, `contacts` y `quotes` incluy
 - **Baja lógica de productos** (`is_active`): desactivar en lugar de borrar mantiene el historial intacto.
 - **Consentimiento con fecha** (`privacy_accepted_at`): registra cuándo se aceptó la política de privacidad.
 - **Contraseñas como hash**: nunca se almacena la contraseña real de un admin.
+- **Sesiones guardadas como hash**: la tabla `sessions` guarda la huella del token, no el token; si la base se filtra, las sesiones no se pueden usar.
 - **IDs con `GENERATED ALWAYS AS IDENTITY`**: estándar SQL moderno en PostgreSQL, en lugar de `serial`.
 - **Timestamps con zona horaria**: evitan errores al operar entre servidores y usuarios en distintas zonas.

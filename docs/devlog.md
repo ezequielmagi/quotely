@@ -1,5 +1,21 @@
 # Devlog
 
+## 2026-11-20
+
+### Hecho
+- Autenticación del panel admin con sesiones y cookie `httpOnly` ([ADR 0008](decisions/0008-autenticacion.md)).
+- Contraseñas guardadas como hash con scrypt y script `npm run admin:create` para crear admins.
+- Tabla `sessions`: se guarda la huella del token, no el token.
+- Endpoints de auth: `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout`.
+- Middleware `requireAuth` que protege las rutas del panel.
+- Panel admin: listar cotizaciones, ver detalle con ítems y cambiar estado.
+
+### Problemas y soluciones
+- **Drizzle Studio no arrancaba (`EADDRINUSE`)**: ya había una instancia abierta en otra terminal → reutilizar la existente.
+
+### Próximo
+- Frontend: catálogo y formulario de cotización.
+
 ## 2026-11-17
 
 ### Hecho
