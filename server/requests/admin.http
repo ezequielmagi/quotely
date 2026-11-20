@@ -17,3 +17,20 @@ GET {{baseUrl}}/api/admin/quotes/1
 
 ### 4. Cotización inexistente → 404
 GET {{baseUrl}}/api/admin/quotes/99999
+
+
+### 5. Cambiar estado → 200
+PATCH {{baseUrl}}/api/admin/quotes/1/status
+Content-Type: application/json
+
+{
+  "status": "en_proceso"
+}
+
+### 6. Estado inválido → 400
+PATCH {{baseUrl}}/api/admin/quotes/1/status
+Content-Type: application/json
+
+{
+  "status": "aprobada"
+}

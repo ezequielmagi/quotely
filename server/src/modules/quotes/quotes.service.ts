@@ -2,7 +2,7 @@ import { and, desc, eq, inArray } from 'drizzle-orm';
 import { db } from '../../db/index.js';
 import { contacts, products, quoteItems, quotes } from '../../db/schema.js';
 import { AppError } from '../../lib/errors.js';
-import type { CreateQuoteInput } from './quotes.schema.js';
+import type { CreateQuoteInput, UpdateStatusInput } from './quotes.schema.js';
 
 export async function createQuote(input: CreateQuoteInput) {
   return db.transaction(async (tx) => {
@@ -114,4 +114,14 @@ export async function getQuoteById(id: number) {
     .where(eq(quoteItems.quoteId, id));
 
   return { ...quote, items };
+}
+
+export async function updateQuoteStatus(id: number, status: UpdateStatusInput['status']) {
+  const [quote] = await db
+    .update(quotes)
+    .set({ status })
+    .where(eq(quotes.id, id))
+    .returning({ id: quotes.id, status: quotes.status, updatedAt: quotes.updatedAt });
+
+  return quote ?? null;
 }

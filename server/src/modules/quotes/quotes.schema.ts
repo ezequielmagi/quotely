@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { quoteStatus } from '../../db/schema.js';
 
 export const createQuoteSchema = z.object({
   contact: z.object({
@@ -25,3 +26,9 @@ export const createQuoteSchema = z.object({
 });
 
 export type CreateQuoteInput = z.infer<typeof createQuoteSchema>;
+
+export const updateStatusSchema = z.object({
+  status: z.enum(quoteStatus.enumValues),
+});
+
+export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;

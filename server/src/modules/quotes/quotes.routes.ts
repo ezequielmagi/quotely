@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getQuote, listQuotes, submitQuote } from './quotes.controller.js';
+import { changeQuoteStatus, getQuote, listQuotes, submitQuote } from './quotes.controller.js';
 
 // Rutas públicas: las usa el cliente
 export const quotesRouter = Router();
@@ -9,3 +9,4 @@ quotesRouter.post('/', submitQuote);
 export const adminQuotesRouter = Router();
 adminQuotesRouter.get('/', listQuotes);
 adminQuotesRouter.get('/:id', getQuote);
+adminQuotesRouter.patch('/:id/status', changeQuoteStatus);
