@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { loginSchema } from './auth.schema.js';
-import { getAdminById, login } from './auth.service.js';
+import { getAdminById, login, logout } from './auth.service.js';
 
 export const SESSION_COOKIE = 'quotely_session';
 
@@ -32,4 +32,15 @@ export async function loginAdmin(req: Request, res: Response) {
 export async function getMe(_req: Request, res: Response) {
   const admin = await getAdminById(res.locals.adminId);
   res.json({ data: admin });
+}
+
+export async function logoutAdmin(req: Request, res: Response) {
+  const token = req.cookies?.[SESSION_COOKIE];
+
+  if (typeof token === 'string') {
+    await logout(token);
+  }
+
+  res.clearCookie(SESSION_COOKIE, { path: '/' });
+  res.status(204).end();
 }

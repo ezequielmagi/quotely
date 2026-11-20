@@ -40,3 +40,7 @@ export async function getAdminById(id: number) {
 
   return admin ?? null;
 }
+
+export async function logout(token: string) {
+  await db.delete(sessions).where(eq(sessions.id, hashToken(token)));
+}

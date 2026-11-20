@@ -21,3 +21,7 @@ Content-Type: application/json
 
 ### ¿Quién soy? → 200 si hay sesión
 GET {{baseUrl}}/api/auth/me
+
+
+### Logout → 204
+POST {{baseUrl}}/api/auth/logout
