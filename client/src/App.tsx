@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchProducts } from './api';
+import { ProductCard } from './components/ProductCard';
 import type { Product } from './types';
 
 function App() {
@@ -15,20 +16,20 @@ function App() {
   }, []);
 
   return (
-    <main>
-      <h1>Quotely</h1>
-      <h2>Catálogo de productos</h2>
+    <main className="mx-auto max-w-5xl px-4 py-10">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold">Quotely</h1>
+        <p className="mt-1 text-gray-600">Catálogo de productos</p>
+      </header>
 
-      {loading && <p>Cargando...</p>}
-      {error && <p>{error}</p>}
+      {loading && <p className="text-gray-500">Cargando...</p>}
+      {error && <p className="text-red-600">{error}</p>}
 
-      <ul>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <li key={product.id}>
-            <strong>{product.name}</strong> — {product.category.name}
-          </li>
+          <ProductCard key={product.id} product={product} />
         ))}
-      </ul>
+      </div>
     </main>
   );
 }
