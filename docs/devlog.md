@@ -1,5 +1,22 @@
 # Devlog
 
+## 2026-11-26
+
+### Hecho
+- Frontend con React + Vite ([ADR 0009](decisions/0009-frontend.md)) y proxy de Vite hacia la API.
+- Estilos con Tailwind CSS ([ADR 0010](decisions/0010-estilos.md)).
+- Catálogo con tarjetas de producto, filtros por categoría y búsqueda.
+- Lista de cotización: agregar productos, cambiar cantidades y quitar.
+- Formulario de envío conectado a `POST /api/quotes`, con botón desactivado durante el envío para evitar pedidos duplicados.
+- Recorrido completo verificado: catálogo → API → base de datos → panel admin.
+
+### Problemas y soluciones
+- **Página en blanco**: un componente seguía importando `App.css` después de borrarlo → quitar el import.
+- **Tailwind sin estilos**: el plugin estaba importado pero no agregado a `plugins` en `vite.config.ts`.
+
+### Próximo
+- Páginas separadas (catálogo, login y panel admin) con ruteo.
+
 ## 2026-11-20
 
 ### Hecho
