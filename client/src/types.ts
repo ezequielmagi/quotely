@@ -26,3 +26,21 @@ export type QuoteItem = {
   product: Product;
   quantity: number;
 };
+
+// Lo que hay que mandarle a POST /api/quotes para crear una cotización.
+// Tiene la misma forma que valida el esquema de Zod en el backend.
+// El "?" marca los campos opcionales.
+export type CreateQuotePayload = {
+  contact: {
+    name: string;
+    email: string;
+    company?: string;
+    phone?: string;
+  };
+  comment?: string;
+  privacyAccepted: boolean;
+  items: {
+    productId: number;
+    quantity: number;
+  }[]; // "[]" = una lista de objetos con esta forma
+};
