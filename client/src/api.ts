@@ -3,17 +3,19 @@ import type { Category, CreateQuotePayload, Product } from './types';
 // =============================================================
 // Comunicación con la API.
 // Los componentes no usan fetch directamente: llaman a estas
-// funciones. Así, si cambia algo de la API, se cambia solo acá.
+// funciones. Si cambia algo de la API, se cambia solo acá.
+//
+// Las cookies (la "pulsera" de la sesión) viajan solas en cada
+// request, porque frontend y API comparten dominio gracias al
+// proxy de Vite.
 // =============================================================
 
 // -------------------------------------------------------------
-// Error de la API.
-// Guarda el código HTTP y, si vino, el detalle de qué campo falló
-// (lo que arma z.flattenError en el backend).
+// Error de la API: guarda el código HTTP y el detalle por campo
 // -------------------------------------------------------------
 export class ApiError extends Error {
   status: number;
-  details?: Record<string, string[]>; // ej.: { contact: ["Email inválido"] }
+  details?: Record<string, string[]>; // ej.: { email: ["Email inválido"] }
 
   constructor(status: number, message: string, details?: Record<string, string[]>) {
     super(message);
@@ -22,35 +24,58 @@ export class ApiError extends Error {
   }
 }
 
+// Forma de una respuesta de la API: { data } si salió bien, { error, details } si no
+type ApiResponse<T> = {
+  data?: T;
+  error?: string;
+  details?: Record<string, string[]>;
+};
+
 // -------------------------------------------------------------
-// Función base para PEDIR datos (GET).
-// <T> es un "hueco" de tipo: getData<Product[]> devuelve productos,
-// getData<Category[]> devuelve categorías.
+// Función base para PEDIR datos (GET)
 // -------------------------------------------------------------
 async function getData<T>(url: string): Promise<T> {
   const response = await fetch(url);
+  const body = (await response.json()) as ApiResponse<T>;
 
-  // response.ok es true si el código fue 2xx
-  if (!response.ok) {
-    throw new ApiError(response.status, `Error ${response.status} al pedir ${url}`);
+  if (!response.ok || body.data === undefined) {
+    throw new ApiError(response.status, body.error ?? `Error ${response.status}`, body.details);
   }
 
-  // La API siempre responde { data: ... }: devolvemos solo "data"
-  const body = (await response.json()) as { data: T };
   return body.data;
 }
 
 // -------------------------------------------------------------
-// Productos (con filtros opcionales)
+// Función base para MANDAR datos (POST con JSON)
+// "payload: unknown" = acepta cualquier objeto; se convierte a JSON
 // -------------------------------------------------------------
+async function postData<T>(url: string, payload: unknown): Promise<T> {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const body = (await response.json()) as ApiResponse<T>;
+
+  if (!response.ok || body.data === undefined) {
+    throw new ApiError(response.status, body.error ?? `Error ${response.status}`, body.details);
+  }
+
+  return body.data;
+}
+
+// =============================================================
+// CATÁLOGO
+// =============================================================
+
 type ProductFilters = {
   categoryId?: number;
   search?: string;
 };
 
+// Productos, con filtros opcionales.
+// URLSearchParams arma la parte después del "?": "category=2&search=gorra"
 export function fetchProducts(filters: ProductFilters = {}) {
-  // URLSearchParams arma la parte de la URL después del "?"
-  // Ej.: { categoryId: 2, search: "gorra" } → "category=2&search=gorra"
   const params = new URLSearchParams();
 
   if (filters.categoryId) params.set('category', String(filters.categoryId));
@@ -60,34 +85,39 @@ export function fetchProducts(filters: ProductFilters = {}) {
   return getData<Product[]>(`/api/products${query ? `?${query}` : ''}`);
 }
 
-// -------------------------------------------------------------
 // Categorías
-// -------------------------------------------------------------
 export function fetchCategories() {
   return getData<Category[]>('/api/categories');
 }
 
-// -------------------------------------------------------------
-// Crear una cotización (POST /api/quotes)
-// -------------------------------------------------------------
-export async function createQuote(payload: CreateQuotePayload) {
-  const response = await fetch('/api/quotes', {
-    method: 'POST',                                   // estamos creando algo
-    headers: { 'Content-Type': 'application/json' },  // "lo que mando es JSON"
-    body: JSON.stringify(payload),                    // objeto → texto JSON
-  });
+// Crear una cotización
+export function createQuote(payload: CreateQuotePayload) {
+  return postData<{ id: number; status: string; createdAt: string }>('/api/quotes', payload);
+}
 
-  // La respuesta puede ser éxito ({ data }) o error ({ error, details })
-  const body = (await response.json()) as {
-    data?: { id: number; status: string; createdAt: string };
-    error?: string;
-    details?: Record<string, string[]>;
-  };
+// =============================================================
+// AUTENTICACIÓN DEL ADMIN
+// =============================================================
 
-  // Si la API respondió 400, 422 o 500, lanzamos un ApiError con el detalle
-  if (!response.ok || !body.data) {
-    throw new ApiError(response.status, body.error ?? 'Error al enviar la cotización', body.details);
-  }
+// Datos del admin que devuelve la API
+export type Admin = {
+  id: number;
+  email: string;
+};
 
-  return body.data;
+// Login: si sale bien, la API manda la cookie de sesión
+// y el navegador la guarda solo
+export function login(email: string, password: string) {
+  return postData<{ email: string }>('/api/auth/login', { email, password });
+}
+
+// ¿Quién soy? Si hay sesión válida devuelve el admin; si no, lanza ApiError 401
+export function fetchMe() {
+  return getData<Admin>('/api/auth/me');
+}
+
+// Logout: la API borra la sesión y la cookie.
+// Responde 204 (sin body), por eso no usamos postData.
+export async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
 }

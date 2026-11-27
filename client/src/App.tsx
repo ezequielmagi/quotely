@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { Layout } from './components/Layout';
+import { RequireAdmin } from './components/RequireAdmin';
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { AdminQuotesPage } from './pages/AdminQuotesPage';
 import { CatalogPage } from './pages/CatalogPage';
@@ -11,20 +12,22 @@ import { NotFoundPage } from './pages/NotFoundPage';
 // =============================================================
 function App() {
   return (
-    // BrowserRouter: activa el ruteo usando la barra de direcciones del navegador
     <BrowserRouter>
       <Routes>
-        {/* Ruta "contenedora": todas las de adentro se muestran
-            dentro del Layout, en el lugar de su <Outlet /> */}
+        {/* Todas las páginas se muestran dentro del Layout */}
         <Route element={<Layout />}>
-          {/* Catálogo: la página principal */}
+          {/* ---------- Públicas ---------- */}
           <Route path="/" element={<CatalogPage />} />
-
-          {/* Panel admin */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route path="/admin" element={<AdminQuotesPage />} />
 
-          {/* "*" = cualquier otra dirección que no coincida con las de arriba */}
+          {/* ---------- Protegidas ----------
+              Todo lo que esté adentro pasa primero por RequireAdmin.
+              Cuando sumemos más páginas del panel, van acá adentro. */}
+          <Route element={<RequireAdmin />}>
+            <Route path="/admin" element={<AdminQuotesPage />} />
+          </Route>
+
+          {/* Cualquier otra dirección */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
